@@ -1,0 +1,1 @@
+A machine learning project to predict the failure of Indian Railways using various machine learning algorithms. The project involves data preprocessing, feature engineering, model training, and evaluation. The dataset used for this project contains information about various parameters related to the railway system, which are used to predict whether maintenance is required or not.
