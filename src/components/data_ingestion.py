@@ -10,7 +10,6 @@ from src.logger import logging
 from src.exception import custom_exception
 from sklearn.model_selection import train_test_split
 
-
 @dataclass #decorator used to say this dataclass only saves metadata
 class data_ingestion_metadata:
     train_dataset_path:str = os.path.join('artifacts','train_dataset.csv') #path where data will be stored
@@ -19,7 +18,7 @@ class data_ingestion_metadata:
 
 class DataIngestion:
     def __init__(self):
-        self.obj = data_ingestion_metadata()
+        self.Ingestion_obj = data_ingestion_metadata()
 
     #data loading and ingestion pipeline
     def DataIngestion_pipeline(self):
@@ -29,24 +28,19 @@ class DataIngestion:
             logging.info('data loaded sucessfully')
 
             #to create a artifact folder from self obj path
-            os.makedirs(os.path.join(self.obj.train_dataset_path),exist_ok=True)
-            df.to_csv(self.obj.raw_dataset_path,index=False,header=True)
+            os.makedirs(os.path.dirname(os.path.join(self.Ingestion_obj.train_dataset_path)),exist_ok=True)
+            df.to_csv(self.Ingestion_obj.raw_dataset_path,index=False,header=True)
 
             train,test = train_test_split(df,test_size=0.3,random_state=42)
 
-            train.to_csv(self.obj.train_dataset_path,index=False,header=True)
-            test.to_csv(self.obj.test_dataset_path,index=False,header=True)
+            train.to_csv(self.Ingestion_obj.train_dataset_path,index=False,header=True)
+            test.to_csv(self.Ingestion_obj.test_dataset_path,index=False,header=True)
             logging.info('data ingestion completed for train and test data"')
 
             return {
-                self.obj.test_dataset_path,
-                self.obj.train_dataset_path
+                self.Ingestion_obj.test_dataset_path,
+                self.Ingestion_obj.train_dataset_path
             }
         
         except Exception as e:
             raise custom_exception(e,sys)
-
-if __name__ == "__main__":
-
-    obj = DataIngestion()
-    obj.DataIngestion_pipeline()
