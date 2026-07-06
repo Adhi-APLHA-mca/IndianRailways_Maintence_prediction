@@ -51,10 +51,6 @@ class CustomData:
     sensor_health_index: float
     inspection_score: float
     delay_minutes: float
-    failure_type: str
-    maintenance_required: int
-    failure_severity: str
-    risk_score: float
 
     def get_data_as_dataframe(self):
         try:
@@ -81,10 +77,6 @@ class CustomData:
                 "sensor_health_index": [self.sensor_health_index],
                 "inspection_score": [self.inspection_score],
                 "delay_minutes": [self.delay_minutes],
-                "failure_type": [self.failure_type],
-                "maintenance_required": [self.maintenance_required],
-                "failure_severity": [self.failure_severity],
-                "risk_score": [self.risk_score],
             }
 
             return pd.DataFrame(custom_data_input_dict)
