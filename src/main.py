@@ -1,5 +1,6 @@
 from src.components.data_ingestion import DataIngestion
 from src.components.data_transformation import DataTransformation
+from src.components.model_trainer import ModelTrainer
 
 ingestion = DataIngestion()
 
@@ -12,4 +13,13 @@ X_train, X_test, y_train, y_test, preprocessor = (
         train_path,
         test_path
     )
+)
+
+trainer = ModelTrainer()
+
+trainer.ModelTrainer_Pipeline(
+    X_test,
+    X_train,
+    y_test,
+    y_train
 )

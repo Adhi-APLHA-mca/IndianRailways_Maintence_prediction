@@ -75,11 +75,12 @@ class DataTransformation:
             logging.info('Data transformation pipeline has been initiated')
 
             target_feature = 'maintenance_required'
+            other_feature = ['failure_type','failure_severity','risk_score']
 
-            x_train = DataTransformation_train_df.drop(columns=[target_feature])
+            x_train = DataTransformation_train_df.drop(columns=[target_feature, *other_feature])
             y_train = DataTransformation_train_df[target_feature]
 
-            x_test = DataTransformation_test_df.drop(columns=[target_feature])
+            x_test = DataTransformation_test_df.drop(columns=[target_feature, *other_feature])
             y_test = DataTransformation_test_df[target_feature]
 
             #applying preprocessing pipeline to the train and test data
