@@ -4,3 +4,8 @@ seaborn
 matplotlib
 fastapi
 jinja2
+scikit-learn
+uvicorn[standard]
+python-multipart
+xgboost
+catboost
