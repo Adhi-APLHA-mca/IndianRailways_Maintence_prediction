@@ -3,145 +3,522 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Railway Failure Prediction</title>
+    <title>Railway Failure Prediction System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #eef2f7;
+            color: #1a1a1a;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        /* ── Header ── */
+        .header {
+            background: #ffffff;
+            border-bottom: 4px solid #003087;
+            padding: 16px 40px;
+            display: flex;
+            align-items: center;
+            gap: 28px;
         }
-        h2 {
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            border: 2px dashed #b0b8c8;
+            background: #f4f6fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.62rem;
+            color: #999;
             text-align: center;
-            color: #2c3e50;
+            line-height: 1.5;
+            flex-shrink: 0;
+            overflow: hidden;
+            padding: 0;
         }
-        form {
+        .logo-box img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+        .header-text { flex: 1; text-align: center; }
+        .header-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #003087;
+        }
+        .header-text .subtitle {
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        /* ── Nav bar ── */
+        .navbar {
+            background: #003087;
+            padding: 8px 40px;
+            font-size: 0.82rem;
+            color: #ccd8ee;
+        }
+        .navbar span { margin-right: 6px; }
+
+        /* ── Layout ── */
+        .container {
+            max-width: 1100px;
+            margin: 24px auto;
+            padding: 0 20px 50px;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 20px;
+            align-items: start;
+        }
+        @media (max-width: 860px) { .container { grid-template-columns: 1fr; } }
+
+        /* ── Section heading ── */
+        .section-heading {
+            background: #003087;
+            color: #fff;
+            padding: 9px 18px;
+            font-size: 0.88rem;
+            font-weight: bold;
+            letter-spacing: 0.4px;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: #ffffff;
+            border: 1px solid #ccd4e0;
+            padding: 24px 28px;
+        }
+
+        /* ── Form grid ── */
+        .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 14px 28px;
         }
-        .full-width {
-            grid-column: 1 / -1;
-        }
+        @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+
+        .field { display: flex; flex-direction: column; gap: 5px; }
+        .full-width { grid-column: 1 / -1; }
+
         label {
-            font-weight: bold;
-            color: #34495e;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #333;
         }
-        input, select, textarea {
+        input {
+            padding: 7px 10px;
+            border: 1px solid #b0bcd0;
+            background: #fafdff;
+            font-size: 0.9rem;
+            color: #111;
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.15s;
         }
-        button {
-            padding: 10px 16px;
-            background: #2980b9;
-            color: white;
+        input:focus { border-color: #003087; box-shadow: 0 0 0 2px rgba(0,48,135,0.1); }
+        input::placeholder { color: #bbb; font-style: italic; }
+        input:out-of-range { border-color: #c0392b; background: #fff5f5; }
+        input:out-of-range:focus { box-shadow: 0 0 0 2px rgba(192,57,43,0.15); }
+
+        .hint {
+            font-size: 0.7rem;
+            font-weight: normal;
+            color: #888;
+            margin-left: 4px;
+        }
+
+        .form-divider {
+            grid-column: 1 / -1;
             border: none;
-            border-radius: 6px;
+            border-top: 1px solid #e0e6f0;
+            margin: 4px 0;
+        }
+        .form-group-label {
+            grid-column: 1 / -1;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #003087;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid #003087;
+        }
+
+        /* ── Submit ── */
+        .btn-submit {
+            padding: 10px 36px;
+            background: #003087;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: none;
             cursor: pointer;
+            letter-spacing: 0.4px;
+            transition: background 0.15s;
         }
-        button:hover {
-            background: #1f6391;
+        .btn-submit:hover { background: #00236a; }
+
+        .btn-sample {
+            padding: 10px 22px;
+            background: #fff;
+            color: #003087;
+            font-size: 0.88rem;
+            font-weight: bold;
+            border: 2px solid #003087;
+            cursor: pointer;
+            transition: background 0.15s;
         }
+        .btn-sample:hover { background: #eef3fb; }
+
+        /* ── Result ── */
         .result-box {
-            margin-top: 20px;
-            padding: 15px;
-            background: #eaf7ea;
-            border: 1px solid #b7dcb0;
-            border-radius: 6px;
-            min-height: 60px;
+            margin-top: 18px;
+            padding: 13px 18px;
+            border: 1px solid #ccd4e0;
+            background: #f7f9fc;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .result-box.has-result {
+            border-left: 5px solid #003087;
+            background: #eef3fb;
+            color: #003087;
+            font-weight: bold;
+        }
+
+        /* ── Right panel ── */
+        .right-panel { display: flex; flex-direction: column; gap: 20px; }
+
+        .chart-card {
+            background: #ffffff;
+            border: 1px solid #ccd4e0;
+        }
+        .chart-card canvas { display: block; }
+
+        .chart-note {
+            font-size: 0.72rem;
+            color: #888;
+            padding: 6px 14px 10px;
+            text-align: center;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            background: #003087;
+            color: #aec0dc;
+            text-align: center;
+            padding: 12px;
+            font-size: 0.78rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Railway Failure Prediction</h2>
-        <form method="post" action="/predict">
-            <label>Train ID</label>
-            <input type="number" name="train_id" placeholder="Enter train ID">
 
-            <label>Region</label>
-            <input type="text" name="region" placeholder="Enter region">
-
-            <label>Season</label>
-            <input type="text" name="season" placeholder="Enter season">
-
-            <label>Train Type</label>
-            <input type="text" name="train_type" placeholder="Enter train type">
-
-            <label>Train Age (Years)</label>
-            <input type="number" step="any" name="train_age_years" placeholder="Enter age">
-
-            <label>Average Speed (km/h)</label>
-            <input type="number" step="any" name="average_speed_kmph" placeholder="Enter speed">
-
-            <label>Distance Travelled (km)</label>
-            <input type="number" step="any" name="distance_travelled_km" placeholder="Enter distance">
-
-            <label>Ambient Temperature (°C)</label>
-            <input type="number" step="any" name="ambient_temperature_c" placeholder="Enter temp">
-
-            <label>Humidity (%)</label>
-            <input type="number" step="any" name="humidity_percent" placeholder="Enter humidity">
-
-            <label>Rainfall (mm)</label>
-            <input type="number" step="any" name="rainfall_mm" placeholder="Enter rainfall">
-
-            <label>Wheel Wear (%)</label>
-            <input type="number" step="any" name="wheel_wear_percent" placeholder="Enter wear">
-
-            <label>Track Vibration Level</label>
-            <input type="number" step="any" name="track_vibration_level" placeholder="Enter vibration">
-
-            <label>Rail Wear (mm)</label>
-            <input type="number" step="any" name="rail_wear_mm" placeholder="Enter rail wear">
-
-            <label>Bearing Temperature (°C)</label>
-            <input type="number" step="any" name="bearing_temperature_c" placeholder="Enter temp">
-
-            <label>Axle Temperature (°C)</label>
-            <input type="number" step="any" name="axle_temperature_c" placeholder="Enter temp">
-
-            <label>Brake Pad Wear (%)</label>
-            <input type="number" step="any" name="brake_pad_wear_percent" placeholder="Enter wear">
-
-            <label>Brake Pressure (psi)</label>
-            <input type="number" step="any" name="brake_pressure_psi" placeholder="Enter pressure">
-
-
-            <label>Battery Voltage</label>
-            <input type="number" step="any" name="battery_voltage" placeholder="Enter voltage">
-
-            <label>Last Maintenance (Days)</label>
-            <input type="number" name="last_maintenance_days" placeholder="Enter days">
-
-            <label>Sensor Health Index</label>
-            <input type="number" step="any" name="sensor_health_index" placeholder="Enter index">
-
-            <label>Inspection Score</label>
-            <input type="number" step="any" name="inspection_score" placeholder="Enter score">
-
-            <label>Delay Minutes</label>
-            <input type="number" step="any" name="delay_minutes" placeholder="Enter delay">
-
-            <div class="full-width">
-                <button type="submit">Predict</button>
-            </div>
-        </form>
-
-        <div class="result-box">
-            <strong>Result:</strong> {{ result if result else "Your prediction will appear here." }}
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-box">
+            <img src="{{ url_for('static', path='images/Indian_Railways_Logo.png') }}" alt="Railway logo">
+        </div>
+        <div class="header-text">
+            <h1>Railway Failure Prediction System</h1>
+            <div class="subtitle">Predictive Maintenance &amp; Failure Detection Advisory</div>
+        </div>
+        <div class="logo-box">
+            <img src="{{ url_for('static', path='images/Indian_Railways_Logo.png') }}" alt="Railway logo">
         </div>
     </div>
+
+    <!-- Nav -->
+    <div class="navbar">
+        <span>Home</span> &rsaquo; <span>Maintenance Portal</span> &rsaquo; <span>Failure Prediction</span>
+    </div>
+
+    <!-- Main -->
+    <div class="container">
+
+        <!-- Left: Form -->
+        <div>
+            <div class="section-heading">Failure Prediction &mdash; Input Parameters</div>
+            <div class="card">
+                <form method="post" action="/predict" id="predForm">
+                    <div class="form-grid">
+
+                        <div class="form-group-label">Train Identity</div>
+                        <div class="field">
+                            <label>Train ID</label>
+                            <input type="number" name="train_id" placeholder="e.g. 12345" min="1">
+                        </div>
+                        <div class="field">
+                            <label>Train Type</label>
+                            <input type="text" name="train_type" placeholder="e.g. Express">
+                        </div>
+                        <div class="field">
+                            <label>Region</label>
+                            <input type="text" name="region" placeholder="e.g. Central Railway">
+                        </div>
+                        <div class="field">
+                            <label>Season</label>
+                            <input type="text" name="season" placeholder="e.g. Monsoon">
+                        </div>
+
+                        <hr class="form-divider">
+                        <div class="form-group-label">Operational Data</div>
+                        <div class="field">
+                            <label>Train Age (Years) <span class="hint">1 – 34</span></label>
+                            <input type="number" step="1" name="train_age_years" placeholder="e.g. 12" min="1" max="34" class="chart-input" data-label="Train Age">
+                        </div>
+                        <div class="field">
+                            <label>Average Speed (km/h) <span class="hint">20 – 160</span></label>
+                            <input type="number" step="0.1" name="average_speed_kmph" placeholder="e.g. 85" min="20" max="160" class="chart-input" data-label="Avg Speed">
+                        </div>
+                        <div class="field">
+                            <label>Distance Travelled (km) <span class="hint">5000 – 2000000</span></label>
+                            <input type="number" step="1" name="distance_travelled_km" placeholder="e.g. 150000" min="5000" max="2000000">
+                        </div>
+                        <div class="field">
+                            <label>Last Maintenance (Days) <span class="hint">1 – 364</span></label>
+                            <input type="number" step="1" name="last_maintenance_days" placeholder="e.g. 90" min="1" max="364" class="chart-input" data-label="Last Maint.">
+                        </div>
+                        <div class="field">
+                            <label>Delay Minutes <span class="hint">0 – 160</span></label>
+                            <input type="number" step="0.1" name="delay_minutes" placeholder="e.g. 15" min="0" max="160">
+                        </div>
+                        <div class="field">
+                            <label>Inspection Score <span class="hint">40 – 100</span></label>
+                            <input type="number" step="0.1" name="inspection_score" placeholder="e.g. 80" min="40" max="100" class="chart-input" data-label="Insp. Score">
+                        </div>
+
+                        <hr class="form-divider">
+                        <div class="form-group-label">Environmental Conditions</div>
+                        <div class="field">
+                            <label>Ambient Temperature (°C) <span class="hint">-1 – 59</span></label>
+                            <input type="number" step="0.1" name="ambient_temperature_c" placeholder="e.g. 32" min="-1" max="59">
+                        </div>
+                        <div class="field">
+                            <label>Humidity (%) <span class="hint">10 – 100</span></label>
+                            <input type="number" step="0.1" name="humidity_percent" placeholder="e.g. 75" min="10" max="100">
+                        </div>
+                        <div class="field">
+                            <label>Rainfall (mm) <span class="hint">0 – 288</span></label>
+                            <input type="number" step="0.1" name="rainfall_mm" placeholder="e.g. 20" min="0" max="288">
+                        </div>
+
+                        <hr class="form-divider">
+                        <div class="form-group-label">Sensor Readings</div>
+                        <div class="field">
+                            <label>Wheel Wear (%) <span class="hint">0 – 100</span></label>
+                            <input type="number" step="0.1" name="wheel_wear_percent" placeholder="e.g. 45" min="0" max="100" class="chart-input" data-label="Wheel Wear">
+                        </div>
+                        <div class="field">
+                            <label>Track Vibration Level <span class="hint">0 – 9</span></label>
+                            <input type="number" step="0.1" name="track_vibration_level" placeholder="e.g. 3.5" min="0" max="9">
+                        </div>
+                        <div class="field">
+                            <label>Rail Wear (mm) <span class="hint">0 – 25</span></label>
+                            <input type="number" step="0.1" name="rail_wear_mm" placeholder="e.g. 8" min="0" max="25">
+                        </div>
+                        <div class="field">
+                            <label>Bearing Temperature (°C) <span class="hint">28 – 218</span></label>
+                            <input type="number" step="0.1" name="bearing_temperature_c" placeholder="e.g. 65" min="28" max="218" class="chart-input" data-label="Bearing Temp">
+                        </div>
+                        <div class="field">
+                            <label>Axle Temperature (°C) <span class="hint">27 – 170</span></label>
+                            <input type="number" step="0.1" name="axle_temperature_c" placeholder="e.g. 70" min="27" max="170" class="chart-input" data-label="Axle Temp">
+                        </div>
+                        <div class="field">
+                            <label>Brake Pad Wear (%) <span class="hint">0 – 100</span></label>
+                            <input type="number" step="0.1" name="brake_pad_wear_percent" placeholder="e.g. 55" min="0" max="100" class="chart-input" data-label="Brake Wear">
+                        </div>
+                        <div class="field">
+                            <label>Brake Pressure (psi) <span class="hint">39 – 140</span></label>
+                            <input type="number" step="0.1" name="brake_pressure_psi" placeholder="e.g. 110" min="39" max="140">
+                        </div>
+                        <div class="field">
+                            <label>Battery Voltage <span class="hint">17 – 31</span></label>
+                            <input type="number" step="0.1" name="battery_voltage" placeholder="e.g. 24" min="17" max="31">
+                        </div>
+                        <div class="field">
+                            <label>Sensor Health Index <span class="hint">0 – 100</span></label>
+                            <input type="number" step="0.1" name="sensor_health_index" placeholder="e.g. 72" min="0" max="100" class="chart-input" data-label="Sensor Health">
+                        </div>
+
+                        <div class="full-width" style="margin-top:10px;">
+                            <button type="submit" class="btn-submit">Submit for Prediction</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="result-box {% if result %}has-result{% endif %}">
+                    <span>Prediction Result:&nbsp;</span>
+                    {{ result if result else "Awaiting input. Please fill the form and submit." }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Charts -->
+        <div class="right-panel">
+
+            <div>
+                <div class="section-heading">Key Sensor Readings</div>
+                <div class="chart-card">
+                    <canvas id="sensorBar" height="260"></canvas>
+                    <div class="chart-note">Updates live as you fill the form</div>
+                </div>
+            </div>
+
+            <div>
+                <div class="section-heading">Wear &amp; Health Overview</div>
+                <div class="chart-card">
+                    <canvas id="wearRadar" height="260"></canvas>
+                    <div class="chart-note">Wheel Wear, Brake Wear, Sensor Health, Inspection Score</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Railway Failure Prediction System &nbsp;|&nbsp; Predictive Maintenance Advisory &nbsp;|&nbsp; For Official Use Only
+    </div>
+
+    <script>
+        // ── Bar chart: key numeric sensor inputs ──
+        const barCtx = document.getElementById('sensorBar').getContext('2d');
+        const barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Train Age', 'Avg Speed', 'Last Maint.', 'Insp. Score', 'Bearing Temp', 'Axle Temp', 'Brake Wear', 'Sensor Health'],
+                datasets: [{
+                    label: 'Value',
+                    data: [0, 0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: 'rgba(0, 48, 135, 0.7)',
+                    borderColor: '#003087',
+                    borderWidth: 1,
+                    borderRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#e8eef5' } },
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+
+        // ── Radar chart: wear & health metrics (0–100 scale) ──
+        const radarCtx = document.getElementById('wearRadar').getContext('2d');
+        const radarChart = new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Wheel Wear %', 'Brake Wear %', 'Sensor Health', 'Insp. Score'],
+                datasets: [{
+                    label: 'Current',
+                    data: [0, 0, 0, 0],
+                    backgroundColor: 'rgba(0, 48, 135, 0.15)',
+                    borderColor: '#003087',
+                    pointBackgroundColor: '#003087',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    r: {
+                        min: 0, max: 100,
+                        ticks: { stepSize: 25, font: { size: 9 } },
+                        grid: { color: '#dde4f0' },
+                        pointLabels: { font: { size: 10 } }
+                    }
+                }
+            }
+        });
+
+        // Field name -> bar index mapping
+        const barFields = {
+            'train_age_years':       0,
+            'average_speed_kmph':    1,
+            'last_maintenance_days': 2,
+            'inspection_score':      3,
+            'bearing_temperature_c': 4,
+            'axle_temperature_c':    5,
+            'brake_pad_wear_percent':6,
+            'sensor_health_index':   7
+        };
+        const radarFields = {
+            'wheel_wear_percent':    0,
+            'brake_pad_wear_percent':1,
+            'sensor_health_index':   2,
+            'inspection_score':      3
+        };
+
+        function updateCharts() {
+            const barData   = [...barChart.data.datasets[0].data];
+            const radarData = [...radarChart.data.datasets[0].data];
+
+            document.querySelectorAll('input[type="number"]').forEach(inp => {
+                const val = parseFloat(inp.value) || 0;
+                const name = inp.name;
+                if (name in barFields)   barData[barFields[name]]     = val;
+                if (name in radarFields) radarData[radarFields[name]] = Math.min(val, 100);
+            });
+
+            barChart.data.datasets[0].data   = barData;
+            radarChart.data.datasets[0].data = radarData;
+            barChart.update('none');
+            radarChart.update('none');
+        }
+
+        document.querySelectorAll('input[type="number"]').forEach(inp => {
+            inp.addEventListener('input', updateCharts);
+        });
+
+        const sampleData = {
+            train_id:               10452,
+            train_type:             'Express',
+            region:                 'Central Railway',
+            season:                 'Monsoon',
+            train_age_years:        28,
+            average_speed_kmph:     130,
+            distance_travelled_km:  980000,
+            ambient_temperature_c:  45,
+            humidity_percent:       92,
+            rainfall_mm:            180,
+            wheel_wear_percent:     87,
+            track_vibration_level:  7.8,
+            rail_wear_mm:           21,
+            bearing_temperature_c:  165,
+            axle_temperature_c:     140,
+            brake_pad_wear_percent: 88,
+            brake_pressure_psi:     55,
+            battery_voltage:        18.5,
+            last_maintenance_days:  320,
+            sensor_health_index:    18,
+            inspection_score:       45,
+            delay_minutes:          120
+        };
+
+        function loadSample() {
+            const form = document.getElementById('predForm');
+            Object.entries(sampleData).forEach(([name, value]) => {
+                const el = form.querySelector(`[name="${name}"]`);
+                if (el) el.value = value;
+            });
+            updateCharts();
+        }
+
+        // Pre-load sample on page start so charts aren't empty
+        loadSample();
+    </script>
+
 </body>
 </html>

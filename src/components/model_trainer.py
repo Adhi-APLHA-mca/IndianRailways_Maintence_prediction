@@ -32,14 +32,14 @@ class ModelTrainer():
         logging.info("Model training started")
         try:
             models = {
-                        "Logistic Regression": LogisticRegression(),
-                        "K-Neighbors Classifier": KNeighborsClassifier(),
-                        "Decision Tree": DecisionTreeClassifier(),
-                        "Random Forest Classifier": RandomForestClassifier(),
+                        "Logistic Regression": LogisticRegression(class_weight='balanced'),
+                        "K-Neighbors Classifier": KNeighborsClassifier(n_neighbors=5, weights='uniform', algorithm='auto'),
+                        "Decision Tree": DecisionTreeClassifier(class_weight='balanced'),
+                        "Random Forest Classifier": RandomForestClassifier(class_weight='balanced'),
                         "XGBClassifier": XGBClassifier(),
                         "CatBoosting Classifier": CatBoostClassifier(verbose=False),
                         "AdaBoost Classifier": AdaBoostClassifier(),
-                        "SVC": SVC()
+                        "SVC": SVC(class_weight='balanced')
                     }
 
             model_report:dict= eval_model(x_train=x_train,x_test=x_test,y_train=y_train,y_test=y_test,models=models)
@@ -66,4 +66,3 @@ class ModelTrainer():
 
         except Exception as e:
             raise custom_exception(e,sys)
-            

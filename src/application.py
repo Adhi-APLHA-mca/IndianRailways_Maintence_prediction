@@ -1,9 +1,11 @@
 from fastapi import FastAPI,Request,Form
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from src.pipeline.prediction import prediction_pipeline,CustomData
 
 application = FastAPI()
 templates = Jinja2Templates(directory="src/template")
+application.mount("/static", StaticFiles(directory="src"), name="static")
 
 @application.get("/")
 def base_prediction(request: Request):
