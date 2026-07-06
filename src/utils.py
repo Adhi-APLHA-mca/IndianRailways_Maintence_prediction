@@ -40,3 +40,13 @@ def eval_model(x_train, x_test, y_train, y_test, models):
         report[model_name] = score
     
     return report
+
+
+#to load file
+def load_object(file_path):
+    try:
+        with open (file_path, 'rb') as file:
+            return pkl.load(file)
+        
+    except Exception as e:
+        raise custom_exception(e,sys)

@@ -1,0 +1,10 @@
+[ 2026-07-06 17:15:10,420 ] 25 root - INFO - DataIngestion Process has been initialized
+[ 2026-07-06 17:15:17,790 ] 28 root - INFO - data loaded sucessfully
+[ 2026-07-06 17:15:19,550 ] 38 root - INFO - data ingestion completed for train and test data"
+[ 2026-07-06 17:15:19,784 ] 75 root - INFO - Data transformation pipeline has been initiated
+[ 2026-07-06 17:15:19,789 ] 60 root - INFO - Data transformation pipeline settings has been completed
+[ 2026-07-06 17:17:07,951 ] 24 root - INFO - pickle file has been saved at artifacts\data_preprocessing.pkl
+[ 2026-07-06 17:17:07,951 ] 97 root - INFO - Data transformation pipeline objects has been stored in form of pkl
+[ 2026-07-06 17:17:07,956 ] 32 root - INFO - Model training started
+[ 2026-07-06 17:23:17,467 ] 60 root - INFO - best model found for both training and test data best model - Random Forest Classifier , accuracy score - 0.7853031927149597
+[ 2026-07-06 17:23:17,566 ] 24 root - INFO - pickle file has been saved at artifacts\model.pkl
