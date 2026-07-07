@@ -24,7 +24,8 @@ class DataIngestion:
     def DataIngestion_pipeline(self):
         logging.info("DataIngestion Process has been initialized")
         try:
-            df = pd.read_csv(input("please place the path of the csv: "))
+            path = r"D:\ML_LEARNING\ML_PROJECTS\Indian_Railways_Failure_Prediction\Dataset\indian_railway_failure_detection_maintenance_v2.csv"
+            df = pd.read_csv(path)
             logging.info('data loaded sucessfully')
 
             #to create a artifact folder from self obj path
