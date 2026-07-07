@@ -30,21 +30,30 @@ jobs:
           path: .
 
   deploy:
-    runs-on: self-hosted
-    needs: build
+  runs-on: self-hosted
+  needs: build
 
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: python-app
-          path: .
+  steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: python-app
+        path: .
 
-      - name: Train Model
-        run: |
-          python main.py
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
 
-      - name: Start FastAPI
-        run: |
-          pkill -f "uvicorn application:application" || true
-          nohup uvicorn application:application --host 0.0.0.0 --port 8000 > app.log 2>&1 &
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Train model
+      run: |
+        python src/main.py
+
+    - name: Start FastAPI
+      run: |
+        pkill -f "uvicorn application:application" || true
+        nohup python -m uvicorn application:application --host 0.0.0.0 --port 8000 > app.log 2>&1 &
