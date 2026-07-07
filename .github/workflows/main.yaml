@@ -1,8 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-# More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
-
-name: Build and deploy Python app to Azure Web App - IndianRailways_Maintenence_Prediction
+name: Build and Deploy to EC2
 
 on:
   push:
@@ -13,58 +9,42 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python version
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      - name: Create and start virtual environment
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-      
       - name: Install dependencies
-        run: pip install -r requirements.txt
-        
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
-      
-      - name: Upload artifact for deployment jobs
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: python-app
-          path: |
-            . 
-            !venv/
+          path: .
 
   deploy:
-  runs-on: self-hosted
-  needs: build
+    runs-on: self-hosted
+    needs: build
 
-  steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: python-app
-        path: .
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: python-app
+          path: .
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      - name: Train Model
+        run: |
+          python main.py
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Train Model
-      run: |
-        python main.py
-
-    - name: Restart FastAPI
-      run: |
-        pkill -f "uvicorn application:application" || true
-        nohup uvicorn application:application --host 0.0.0.0 --port 8000 > app.log 2>&1 &
+      - name: Start FastAPI
+        run: |
+          pkill -f "uvicorn application:application" || true
+          nohup uvicorn application:application --host 0.0.0.0 --port 8000 > app.log 2>&1 &
